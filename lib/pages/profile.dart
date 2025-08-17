@@ -1,8 +1,9 @@
 import 'dart:ui';
-
+import 'dart:convert';
 import 'package:attendo/pages/user_validation.dart';
-import 'package:attendo/styles/app_color.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -12,7 +13,23 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  Map<String, dynamic> timetable = {};
+
   @override
+  void initState() {
+    super.initState();
+    loadJson();
+  }
+
+  Future<void> loadJson() async {
+    String data = await rootBundle.loadString('assets/data/timetable.json');
+    var todaystimetable = json.decode(data)["timetable"]["Monday"];
+    print(todaystimetable);
+    setState(() {
+      timetable = todaystimetable;
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
@@ -41,28 +58,36 @@ class _ProfileState extends State<Profile> {
               child: Stack(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(8),
+                    padding: EdgeInsets.fromLTRB(00, 20, 0, 20),
                     width: 410,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: const Color.fromARGB(31, 255, 255, 255),
+                      color: const Color.fromARGB(143, 187, 182, 182),
                     ),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(100), // circle
                           child: Image.asset(
                             'assets/images/prof.png',
-                            height: 100,
-                            width: 100,
+                            height: 80,
+                            width: 80,
                             fit: BoxFit.cover,
                           ),
                         ),
-                        SizedBox(width: 20),
 
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text("Divyansh Kumar", textAlign: TextAlign.left),
+                            Text(
+                              "Divyansh Kumar",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             SizedBox(height: 12),
                             Row(
                               children: [
@@ -83,11 +108,48 @@ class _ProfileState extends State<Profile> {
             ),
             SizedBox(height: 10),
             Container(
-              height: 500,
+              padding: EdgeInsets.fromLTRB(40, 40, 40, 40),
               width: 410,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: const Color.fromARGB(31, 255, 255, 255),
+                color: const Color.fromARGB(143, 187, 182, 182),
+              ),
+              child: Center(
+                child: Column(
+                  children: [
+                    Container(
+                      height: 20,
+                      width: 300,
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(80, 0, 0, 0),
+                      ),
+                      child: Text("Percentage"),
+                    ),
+                    SizedBox(height: 20),
+                    Container(
+                      width: double.infinity,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Teacher's :", style: TextStyle(fontSize: 17)),
+                          Text("Subjects", style: TextStyle(fontSize: 17)),
+                        ],
+                      ),
+                    ),
+                    if (timetable.isNotEmpty)
+                      ListView(
+                        shrinkWrap:
+                            true, // 👈 tells ListView to take only the space it needs
+                        physics:
+                            NeverScrollableScrollPhysics(), // 👈 disable its own scrolling
+                        children: timetable.entries.map<Widget>((entry) {
+                          return ListTile(
+                            title: Text("${entry.key} → ${entry.value}"),
+                          );
+                        }).toList(),
+                      ),
+                  ],
+                ),
               ),
             ),
             SizedBox(height: 10),
@@ -96,9 +158,9 @@ class _ProfileState extends State<Profile> {
               width: 410,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: const Color.fromARGB(31, 255, 255, 255),
+                color: const Color.fromARGB(143, 187, 182, 182),
               ),
-              child: OutlinedButton(
+              child: TextButton(
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
