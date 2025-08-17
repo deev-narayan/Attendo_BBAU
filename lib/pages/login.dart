@@ -52,6 +52,21 @@ class _LoginState extends State<Login> {
               ],
             ),
           ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset("./assets/images/hero.png", height: 150),
+              Container(
+                height: 240,
+                child: Column(
+                  children: [
+                    TextField(),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
