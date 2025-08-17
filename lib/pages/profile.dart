@@ -4,6 +4,7 @@ import 'package:attendo/pages/user_validation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:intl/intl.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -20,11 +21,11 @@ class _ProfileState extends State<Profile> {
     super.initState();
     loadJson();
   }
-
+  String today = DateFormat('EEEE').format(DateTime.now());
   Future<void> loadJson() async {
     String data = await rootBundle.loadString('assets/data/timetable.json');
-    var todaystimetable = json.decode(data)["timetable"]["Monday"];
-    print(todaystimetable);
+    var todaystimetable = json.decode(data)["timetable"][today.toLowerCase()];
+    print(today.toLowerCase());
     setState(() {
       timetable = todaystimetable;
     });
