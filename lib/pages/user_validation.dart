@@ -10,8 +10,6 @@ class UserValidation extends StatefulWidget {
 class _UserValidationState extends State<UserValidation> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(appBar: AppBar(title: Text("Class Name "))),
-    );
+    return Scaffold(appBar: AppBar(title: Text("Class Name ")));
   }
 }

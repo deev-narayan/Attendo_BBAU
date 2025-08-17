@@ -1,3 +1,4 @@
+import 'package:attendo/pages/user_validation.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
@@ -11,7 +12,20 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ,
+      body: Center(
+        child: FilledButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return UserValidation();
+                },
+              ),
+            );
+          },
+          child: Text("Mark Attendence"),
+        ),
+      ),
     );
   }
 }
