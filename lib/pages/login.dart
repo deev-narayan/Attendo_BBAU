@@ -39,62 +39,68 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
-                FilledButton(
-                  onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return Profile();
-                        },
-                      ),
-                    );
-                  },
-                  child: Text("login"),
-                ),
               ],
             ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset("./assets/images/hero.png", height: 150),
-              Container(
-                height: 240,
-                child: Column(
-                  children: [
-                    SizedBox(height: 20),
-                    // Normal Text Input
-                    SizedBox(
-                      width: 300,
-                      child: TextField(
-                        controller: usernameController,
-                        decoration: InputDecoration(
-                          labelText: "Enrollment ID:",
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.person),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset("./assets/images/hero.png", height: 150),
+                Container(
+                  height: 240,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 20),
+                        // Normal Text Input
+                        SizedBox(
+                          width: double.infinity,
+                          child: TextField(
+                            controller: usernameController,
+                            decoration: InputDecoration(
+                              labelText: "Enrollment ID:",
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.person),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    SizedBox(height: 16),
-
-                    // Password Input
-                    SizedBox(
-                      width: 300,
-                      child: TextField(
-                        controller: passwordController,
-                        obscureText: true, // hides the text
-                        decoration: InputDecoration(
-                          labelText: "Password",
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.lock),
+                        SizedBox(height: 16),
+                    
+                        // Password Input
+                        SizedBox(
+                          width: double.infinity,
+                          child: TextField(
+                            controller: passwordController,
+                            obscureText: true, // hides the text
+                            decoration: InputDecoration(
+                              labelText: "Password",
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.lock),
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 17,),
+                        OutlinedButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return Profile();
+                                },
+                              ),
+                            );
+                          },
+                          child: Text("Login"),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
