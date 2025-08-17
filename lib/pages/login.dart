@@ -10,6 +10,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   @override
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
@@ -57,7 +59,34 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset("./assets/images/hero.png", height: 150),
-              Container(height: 240, child: Column(children: [TextField()])),
+              Container(
+                height: 240,
+                child: Column(
+                  children: [
+                    // Normal Text Input
+                    TextField(
+                      controller: usernameController,
+                      decoration: InputDecoration(
+                        labelText: "Enrollment ID:",
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.person),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+
+                    // Password Input
+                    TextField(
+                      controller: passwordController,
+                      obscureText: true, // hides the text
+                      decoration: InputDecoration(
+                        labelText: "Password",
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.lock),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ],
