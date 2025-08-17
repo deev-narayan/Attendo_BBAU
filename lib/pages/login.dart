@@ -9,9 +9,9 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  @override
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
@@ -29,8 +29,8 @@ class _LoginState extends State<Login> {
               children: [
                 Container(
                   margin: const EdgeInsets.fromLTRB(40, 0, 40, 20),
-                  height: 450,
-                  width: double.infinity,
+                  height: 400,
+                  width: 350,
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(92, 255, 255, 255),
                     borderRadius: BorderRadius.circular(10),
@@ -47,56 +47,58 @@ class _LoginState extends State<Login> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset("./assets/images/hero.png", height: 150),
+                Image.asset(
+                  "./assets/images/hero.png",
+                  height: 150,
+                  color: const Color.fromARGB(255, 0, 19, 34), // your desired color
+                  colorBlendMode: BlendMode.srcIn,
+                ),
                 Container(
-                  height: 240,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 20),
-                        // Normal Text Input
-                        SizedBox(
-                          width: double.infinity,
-                          child: TextField(
-                            controller: usernameController,
-                            decoration: InputDecoration(
-                              labelText: "Enrollment ID:",
-                              border: OutlineInputBorder(),
-                              prefixIcon: Icon(Icons.person),
-                            ),
+                  height: 230,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20),
+                      // Normal Text Input
+                      SizedBox(
+                        width: 260,
+                        child: TextField(
+                          controller: usernameController,
+                          decoration: InputDecoration(
+                            labelText: "Enrollment ID:",
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.person),
                           ),
                         ),
-                        SizedBox(height: 16),
-                    
-                        // Password Input
-                        SizedBox(
-                          width: double.infinity,
-                          child: TextField(
-                            controller: passwordController,
-                            obscureText: true, // hides the text
-                            decoration: InputDecoration(
-                              labelText: "Password",
-                              border: OutlineInputBorder(),
-                              prefixIcon: Icon(Icons.lock),
-                            ),
+                      ),
+                      SizedBox(height: 16),
+                  
+                      // Password Input
+                      SizedBox(
+                        width: 260,
+                        child: TextField(
+                          controller: passwordController,
+                          obscureText: true, // hides the text
+                          decoration: InputDecoration(
+                            labelText: "Password",
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.lock),
                           ),
                         ),
-                        SizedBox(height: 17,),
-                        OutlinedButton(
-                          onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return Profile();
-                                },
-                              ),
-                            );
-                          },
-                          child: Text("Login"),
-                        ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 17),
+                      OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return Profile();
+                              },
+                            ),
+                          );
+                        },
+                        child: Text("Login",style: TextStyle(fontSize: 16),),
+                      ),
+                    ],
                   ),
                 ),
               ],
