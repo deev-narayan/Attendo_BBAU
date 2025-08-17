@@ -50,7 +50,7 @@ class _ProfileState extends State<Profile> {
                     child: Row(
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(100), 
+                          borderRadius: BorderRadius.circular(100), // circle
                           child: Image.asset(
                             'assets/images/prof.png',
                             height: 100,
@@ -62,7 +62,7 @@ class _ProfileState extends State<Profile> {
 
                         Column(
                           children: [
-                            Text("Divyansh Kumar",textAlign: TextAlign.left,),
+                            Text("Divyansh Kumar", textAlign: TextAlign.left),
                             SizedBox(height: 12),
                             Row(
                               children: [
@@ -97,6 +97,18 @@ class _ProfileState extends State<Profile> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: const Color.fromARGB(31, 255, 255, 255),
+              ),
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: ((context) {
+                        return UserValidation();
+                      }),
+                    ),
+                  );
+                },
+                child: Text("Mark your attendace"),
               ),
             ),
           ],
