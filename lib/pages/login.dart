@@ -63,25 +63,32 @@ class _LoginState extends State<Login> {
                 height: 240,
                 child: Column(
                   children: [
+                    SizedBox(height: 20),
                     // Normal Text Input
-                    TextField(
-                      controller: usernameController,
-                      decoration: InputDecoration(
-                        labelText: "Enrollment ID:",
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.person),
+                    SizedBox(
+                      width: 300,
+                      child: TextField(
+                        controller: usernameController,
+                        decoration: InputDecoration(
+                          labelText: "Enrollment ID:",
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.person),
+                        ),
                       ),
                     ),
                     SizedBox(height: 16),
 
                     // Password Input
-                    TextField(
-                      controller: passwordController,
-                      obscureText: true, // hides the text
-                      decoration: InputDecoration(
-                        labelText: "Password",
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.lock),
+                    SizedBox(
+                      width: 300,
+                      child: TextField(
+                        controller: passwordController,
+                        obscureText: true, // hides the text
+                        decoration: InputDecoration(
+                          labelText: "Password",
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.lock),
+                        ),
                       ),
                     ),
                   ],
