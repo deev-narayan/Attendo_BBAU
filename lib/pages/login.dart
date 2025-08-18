@@ -50,7 +50,12 @@ class _LoginState extends State<Login> {
                 Image.asset(
                   "./assets/images/hero.png",
                   height: 150,
-                  color: const Color.fromARGB(255, 0, 19, 34), // your desired color
+                  color: const Color.fromARGB(
+                    255,
+                    0,
+                    19,
+                    34,
+                  ), // your desired color
                   colorBlendMode: BlendMode.srcIn,
                 ),
                 Container(
@@ -71,7 +76,7 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                       SizedBox(height: 16),
-                  
+
                       // Password Input
                       SizedBox(
                         width: 260,
@@ -91,12 +96,12 @@ class _LoginState extends State<Login> {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) {
-                                return Profile();
+                                return SafeArea(child: Profile());
                               },
                             ),
                           );
                         },
-                        child: Text("Login",style: TextStyle(fontSize: 16),),
+                        child: Text("Login", style: TextStyle(fontSize: 16)),
                       ),
                     ],
                   ),
