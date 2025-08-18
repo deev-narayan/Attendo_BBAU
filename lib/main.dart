@@ -19,7 +19,9 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.from(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color.fromARGB(255, 0, 132, 255),
+        ),
       ),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system,
