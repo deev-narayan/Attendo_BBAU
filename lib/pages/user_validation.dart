@@ -161,7 +161,9 @@ class _UserValidationState extends State<UserValidation> {
                                 borderRadius: BorderRadius.circular(9),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              print("Opening camera");
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
 
