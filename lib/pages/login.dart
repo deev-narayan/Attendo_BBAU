@@ -20,7 +20,7 @@ class _LoginState extends State<Login> {
             height: double.infinity,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: const Color.fromARGB(94, 71, 71, 71),
+              
             ),
           ),
           Center(
@@ -32,7 +32,7 @@ class _LoginState extends State<Login> {
                   height: 400,
                   width: 350,
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(92, 255, 255, 255),
+                    color: const Color.fromARGB(19, 255, 255, 255),
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       color: const Color.fromARGB(90, 0, 0, 0),
@@ -50,12 +50,7 @@ class _LoginState extends State<Login> {
                 Image.asset(
                   "./assets/images/hero.png",
                   height: 150,
-                  color: const Color.fromARGB(
-                    255,
-                    0,
-                    19,
-                    34,
-                  ), // your desired color
+                  color: const Color.fromARGB(255, 0, 132, 255), // your desired color
                   colorBlendMode: BlendMode.srcIn,
                 ),
                 Container(

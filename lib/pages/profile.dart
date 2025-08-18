@@ -42,15 +42,17 @@ class _ProfileState extends State<Profile> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
+                margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
                 height: 50,
-                width: double.infinity,
+                width: 340,
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(14, 226, 226, 226),
+                  color: const Color.fromARGB(106, 0, 132, 255),
+                  borderRadius: BorderRadius.circular(10)
                 ),
                 child: Center(
                   child: Text(
                     "B.Tech : Computer Science Engineering",
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w100),
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -61,10 +63,10 @@ class _ProfileState extends State<Profile> {
                   children: [
                     Container(
                       padding: EdgeInsets.fromLTRB(00, 20, 0, 20),
-                      width: 410,
+                      width: 340,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: const Color.fromARGB(143, 187, 182, 182),
+                        color: const Color.fromARGB(61, 187, 182, 182),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -113,10 +115,10 @@ class _ProfileState extends State<Profile> {
                 padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                 child: Container(
                   padding: EdgeInsets.fromLTRB(40, 40, 40, 40),
-                  width: 410,
+                  width: 340,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: const Color.fromARGB(143, 187, 182, 182),
+                    color: const Color.fromARGB(61, 187, 182, 182),
                   ),
                   child: Center(
                     child: Column(
@@ -125,7 +127,7 @@ class _ProfileState extends State<Profile> {
                           height: 20,
                           width: 300,
                           decoration: BoxDecoration(
-                            color: const Color.fromARGB(80, 0, 0, 0),
+                            color: const Color.fromARGB(61, 187, 182, 182),
                           ),
                           child: Text("Percentage"),
                         ),
@@ -164,10 +166,11 @@ class _ProfileState extends State<Profile> {
                 padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                 child: Container(
                   height: 50,
-                  width: 410,
+                  width: 340,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: const Color.fromARGB(143, 187, 182, 182),
+                    color: const Color.fromARGB(61, 187, 182, 182),
+                    border: Border.all(width: 2,color: Color.fromARGB(255, 0, 132, 255))
                   ),
                   child: TextButton(
                     onPressed: () {
@@ -179,7 +182,7 @@ class _ProfileState extends State<Profile> {
                         ),
                       );
                     },
-                    child: Text("Mark your attendace"),
+                    child: Text("Mark your attendace",style: TextStyle(fontWeight: FontWeight.w600),),
                   ),
                 ),
               ),

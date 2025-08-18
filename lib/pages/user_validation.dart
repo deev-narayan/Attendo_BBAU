@@ -33,7 +33,7 @@ class _UserValidationState extends State<UserValidation> {
                             border: Border(
                               bottom: BorderSide(
                                 width: 1.0,
-                                color: const Color(0xFFF06292),
+                                color: Colors.deepPurple,
                               ),
                             ),
                           ),
@@ -47,7 +47,7 @@ class _UserValidationState extends State<UserValidation> {
                               SizedBox(width: 20),
                               Icon(
                                 Icons.check_circle_outline,
-                                color: Colors.pink[300],
+                                color: Colors.deepPurple,
                               ),
                             ],
                           ),
@@ -68,7 +68,7 @@ class _UserValidationState extends State<UserValidation> {
                                   Text(
                                     "111",
                                     style: TextStyle(
-                                      color: Colors.pink.shade300,
+                                      color: Colors.deepPurple[300],
                                     ),
                                   ),
                                 ],
@@ -82,7 +82,7 @@ class _UserValidationState extends State<UserValidation> {
                                   Text(
                                     "11dfsd1",
                                     style: TextStyle(
-                                      color: Colors.pink.shade300,
+                                      color: Colors.deepPurple.shade300,
                                     ),
                                   ),
                                 ],
@@ -101,7 +101,7 @@ class _UserValidationState extends State<UserValidation> {
                               ),
                               Text(
                                 "1 km",
-                                style: TextStyle(color: Colors.pink[300]),
+                                style: TextStyle(color: Colors.deepPurple[300]),
                               ),
                             ],
                           ),
@@ -126,7 +126,7 @@ class _UserValidationState extends State<UserValidation> {
                             border: Border(
                               bottom: BorderSide(
                                 width: 1.0,
-                                color: const Color(0xFFF06292),
+                                color: Colors.deepPurple,
                               ),
                             ),
                           ),
@@ -140,7 +140,7 @@ class _UserValidationState extends State<UserValidation> {
                               SizedBox(width: 20),
                               Icon(
                                 Icons.check_circle_outline,
-                                color: Colors.pink[300],
+                                color: Colors.deepPurple[300],
                               ),
                             ],
                           ),
@@ -152,7 +152,7 @@ class _UserValidationState extends State<UserValidation> {
                               maximumSize: Size(180, 50),
                               minimumSize: Size(180, 50),
                               side: BorderSide(
-                                color: Colors.pink[300]!,
+                                color: Colors.deepPurple[300]!,
                                 width: 1, // optional: thickness
                               ),
                               shape: RoundedRectangleBorder(
@@ -172,7 +172,7 @@ class _UserValidationState extends State<UserValidation> {
                                 Text(
                                   "Start Camera",
                                   style: TextStyle(
-                                    color: Colors.pink[300],
+                                    color: Colors.deepPurple[300],
                                     fontSize: 16,
                                   ),
                                 ),
