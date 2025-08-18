@@ -75,14 +75,27 @@ class _ProfileState extends State<Profile> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(100), // circle
-                            child: Image.asset(
-                              'assets/images/prof.png',
-                              height: 80,
-                              width: 80,
-                              fit: BoxFit.cover,
-                            ),
+                          Stack(
+                            alignment: AlignmentGeometry.directional(00, 00),
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Color.fromARGB(255, 36, 149, 255),
+                                ),
+                              ),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                  100,
+                                ), // circle
+                                child: Image.asset(
+                                  'assets/images/prof.png',
+                                  height: 80,
+                                  width: 80,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ],
                           ),
 
                           Column(
