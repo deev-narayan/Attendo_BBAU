@@ -19,27 +19,26 @@ class _LoginState extends State<Login> {
           Container(
             height: double.infinity,
             width: double.infinity,
-            decoration: BoxDecoration(
-              
-            ),
+            decoration: BoxDecoration(),
           ),
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  margin: const EdgeInsets.fromLTRB(40, 0, 40, 20),
-                  height: 400,
-                  width: 350,
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(19, 255, 255, 255),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: const Color.fromARGB(90, 0, 0, 0),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(40, 0, 40, 0),
+            child: Center(
+              child: Card(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(40, 0, 40, 20),
+                      height: 400,
+                      width: 350,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
           Center(
@@ -50,7 +49,12 @@ class _LoginState extends State<Login> {
                 Image.asset(
                   "./assets/images/hero.png",
                   height: 150,
-                  color: const Color.fromARGB(255, 0, 132, 255), // your desired color
+                  color: const Color.fromARGB(
+                    255,
+                    0,
+                    132,
+                    255,
+                  ), // your desired color
                   colorBlendMode: BlendMode.srcIn,
                 ),
                 Container(
