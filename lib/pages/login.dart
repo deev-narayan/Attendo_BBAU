@@ -57,7 +57,7 @@ class _LoginState extends State<Login> {
                   ), // your desired color
                   colorBlendMode: BlendMode.srcIn,
                 ),
-                Container(
+                SizedBox(
                   height: 230,
                   child: Column(
                     children: [

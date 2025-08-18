@@ -1,8 +1,8 @@
-import 'package:attendo/pages/login.dart';
-import 'package:attendo/styles/app_color.dart';
+import 'package:attendo/pages/login_test.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
       ),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system,
-      home: Login(),
+      home: LoginTest(),
     );
   }
 }
