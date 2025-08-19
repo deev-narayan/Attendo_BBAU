@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:attendo/data/notifires.dart';
 import 'package:attendo/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -18,12 +19,18 @@ class _LoginTestState extends State<LoginTest> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  // 🔹 Added controllers for semester & year
+  final TextEditingController semesterController = TextEditingController();
+  final TextEditingController yearController = TextEditingController();
+
   bool isLoading = false;
   bool isLoggedIn = false;
   Map<String, dynamic> userData = {
     "name": "",
     "department": "",
     "profileImage": "",
+    "semester": "",
+    "year": "",
   };
 
   @override
@@ -34,7 +41,6 @@ class _LoginTestState extends State<LoginTest> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageFinished: (url) async {
-            // detect profile page load
             if (url.contains("vidhyarthi/profile/index")) {
               debugPrint("✅ Profile page loaded");
 
@@ -42,16 +48,21 @@ class _LoginTestState extends State<LoginTest> {
               if (!mounted) return;
 
               setState(() {
-                userData = data;
+                userData = {
+                  ...data,
+                  "semester": semesterController.text,
+                  "year": yearController.text,
+                };
                 isLoading = false;
                 isLoggedIn = true;
               });
 
-              // ✅ Delay saving JSON until after the first frame
-              WidgetsBinding.instance.addPostFrameCallback((_) async {
-                await saveToJson(data);
+              nameNotifier.value = data["name"];
+              departmentNotifier.value = data["department"];
+              profileImageNotifier.value = data["profileImage"];
 
-                // Navigate only if profile is valid
+              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                await saveToJson(userData);
                 if (data["name"] != "Not Found" && mounted) {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
@@ -69,7 +80,6 @@ class _LoginTestState extends State<LoginTest> {
       );
   }
 
-  /// Inject username + password into login form and click submit
   Future<void> _injectJS() async {
     await _controller.runJavaScript('''
       document.querySelector('input[name="LoginForm[username]"]').value = "${usernameController.text}";
@@ -79,14 +89,12 @@ class _LoginTestState extends State<LoginTest> {
     ''');
   }
 
-  /// Navigate to profile page
   Future<void> gotoprofile() async {
     await _controller.runJavaScript('''
       window.location.href = 'https://bbau.samarth.edu.in/index.php/vidhyarthi/profile/index';
     ''');
   }
 
-  /// Extract profile info (name, dept, image)
   Future<Map<String, dynamic>> extractProfileInfo() async {
     try {
       String name =
@@ -95,8 +103,7 @@ class _LoginTestState extends State<LoginTest> {
           var elem = document.querySelector("body > div.be-wrapper.be-fixed-sidebar > div.be-content > div > div:nth-child(3) > div > div > div:nth-child(1) > div > div.col-md-9.col-sm-12 > strong");
           return elem ? elem.textContent.trim() : "Not Found";
         })();
-      ''')
-              as String;
+      ''') as String;
 
       String department =
           await _controller.runJavaScriptReturningResult('''
@@ -104,8 +111,7 @@ class _LoginTestState extends State<LoginTest> {
           var elem = document.querySelector("body > div.be-wrapper.be-fixed-sidebar > div.be-content > div > div:nth-child(4) > div > div > div.card-body.table-responsive > div > div > div.card-header.text-uppercase > h5");
           return elem ? elem.textContent.trim() : "Not Found";
         })();
-      ''')
-              as String;
+      ''') as String;
 
       String profileImage =
           await _controller.runJavaScriptReturningResult('''
@@ -113,8 +119,7 @@ class _LoginTestState extends State<LoginTest> {
           var elem = document.querySelector("body > div.be-wrapper.be-fixed-sidebar > div.be-content > div > div:nth-child(3) > div > div > div:nth-child(1) > div > div.col-md-3.col-sm-12 > img");
           return elem ? elem.src : "Not Found";
         })();
-      ''')
-              as String;
+      ''') as String;
 
       return {
         "name": name.replaceAll('"', ''),
@@ -131,7 +136,6 @@ class _LoginTestState extends State<LoginTest> {
     }
   }
 
-  /// Save JSON to local file
   Future<void> saveToJson(Map<String, dynamic> data) async {
     try {
       final dir = await getApplicationDocumentsDirectory();
@@ -149,13 +153,11 @@ class _LoginTestState extends State<LoginTest> {
       body: SafeArea(
         child: Stack(
           children: [
-            // Hidden WebView (set height >0 for debugging)
             Positioned(
               height: 0,
               width: 0,
               child: WebViewWidget(controller: _controller),
             ),
-
             Center(
               child: isLoading
                   ? Column(
@@ -166,11 +168,11 @@ class _LoginTestState extends State<LoginTest> {
                         Text("Fetching your profile, please wait..."),
                       ],
                     )
-                  : Container(
-                    height: 470,
-                    width: 340,
-                    child: Card(
-                      child: Column(
+                  : SizedBox(
+                      height: 580,
+                      width: 340,
+                      child: Card(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
@@ -180,7 +182,7 @@ class _LoginTestState extends State<LoginTest> {
                               colorBlendMode: BlendMode.srcIn,
                             ),
                             const SizedBox(height: 30),
-                      
+
                             // Enrollment ID input
                             SizedBox(
                               width: 260,
@@ -194,7 +196,7 @@ class _LoginTestState extends State<LoginTest> {
                               ),
                             ),
                             const SizedBox(height: 16),
-                      
+
                             // Password input
                             SizedBox(
                               width: 260,
@@ -208,9 +210,37 @@ class _LoginTestState extends State<LoginTest> {
                                 ),
                               ),
                             ),
-                      
+                            const SizedBox(height: 16),
+
+                            // Semester input
+                            SizedBox(
+                              width: 260,
+                              child: TextField(
+                                controller: semesterController,
+                                decoration: const InputDecoration(
+                                  labelText: "Semester",
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.school),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Year input
+                            SizedBox(
+                              width: 260,
+                              child: TextField(
+                                controller: yearController,
+                                decoration: const InputDecoration(
+                                  labelText: "Year",
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.calendar_today),
+                                ),
+                              ),
+                            ),
+
                             const SizedBox(height: 20),
-                      
+
                             // Login Button
                             Container(
                               width: 120,
@@ -224,11 +254,7 @@ class _LoginTestState extends State<LoginTest> {
                               child: TextButton(
                                 onPressed: () async {
                                   setState(() => isLoading = true);
-                      
-                                  // Inject login
                                   await _injectJS();
-                      
-                                  // After login, explicitly go to profile page
                                   Future.delayed(const Duration(seconds: 3), () {
                                     gotoprofile();
                                   });
@@ -239,14 +265,10 @@ class _LoginTestState extends State<LoginTest> {
                                 ),
                               ),
                             ),
-                      
-                            const SizedBox(height: 20),
-                            Text("Status: ${userData["department"]}"),
-                            
                           ],
                         ),
+                      ),
                     ),
-                  ),
             ),
           ],
         ),
