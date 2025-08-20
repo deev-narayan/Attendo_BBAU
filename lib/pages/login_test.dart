@@ -15,73 +15,89 @@ class LoginTest extends StatefulWidget {
 }
 
 class _LoginTestState extends State<LoginTest> {
-  late final WebViewController _controller;
+  WebViewController? _controller; // nullable
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  // 🔹 Added controllers for semester & year
-  final TextEditingController semesterController = TextEditingController();
-  final TextEditingController yearController = TextEditingController();
-
   bool isLoading = false;
-  bool isLoggedIn = false;
-  Map<String, dynamic> userData = {
-    "name": "",
-    "department": "",
-    "profileImage": "",
-    "semester": "",
-    "year": "",
-  };
 
   @override
   void initState() {
     super.initState();
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageFinished: (url) async {
-            if (url.contains("vidhyarthi/profile/index")) {
-              debugPrint("✅ Profile page loaded");
-
-              final data = await extractProfileInfo();
-              if (!mounted) return;
-
-              setState(() {
-                userData = {
-                  ...data,
-                  "semester": semesterController.text,
-                  "year": yearController.text,
-                };
-                isLoading = false;
-                isLoggedIn = true;
-              });
-
-              nameNotifier.value = data["name"];
-              departmentNotifier.value = data["department"];
-              profileImageNotifier.value = data["profileImage"];
-
-              WidgetsBinding.instance.addPostFrameCallback((_) async {
-                await saveToJson(userData);
-                if (data["name"] != "Not Found" && mounted) {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => const SafeArea(child: Profile()),
-                    ),
-                  );
-                }
-              });
-            }
-          },
-        ),
-      )
-      ..loadRequest(
-        Uri.parse('https://bbau.samarth.edu.in/index.php/site/login'),
-      );
+    _checkSavedProfile();
   }
 
+  // Load saved profile.json if exists
+  Future<Map<String, dynamic>?> loadSavedProfile() async {
+    try {
+      final dir = await getApplicationDocumentsDirectory();
+      final file = File('${dir.path}/profile.json');
+      if (await file.exists()) {
+        final content = await file.readAsString();
+        return jsonDecode(content);
+      }
+    } catch (e) {
+      debugPrint("❌ Error loading saved profile: $e");
+    }
+    return null;
+  }
+
+  // Check saved profile or initialize WebView
+  Future<void> _checkSavedProfile() async {
+    final savedData = await loadSavedProfile();
+    if (savedData != null && savedData["name"] != "") {
+      // update notifiers with saved data
+      nameNotifier.value = savedData["name"];
+      departmentNotifier.value = savedData["department"];
+      profileImageNotifier.value = savedData["profileImage"];
+
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const SafeArea(child: Profile()),
+        ),
+      );
+    } else {
+      // Initialize WebView for first-time login
+      _controller = WebViewController()
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..setNavigationDelegate(
+          NavigationDelegate(
+            onPageFinished: (url) async {
+              if (url.contains("vidhyarthi/profile/index")) {
+                debugPrint("✅ Profile page loaded");
+
+                final data = await extractProfileInfo();
+                if (!mounted) return;
+
+                nameNotifier.value = data["name"];
+                departmentNotifier.value = data["department"];
+                profileImageNotifier.value = data["profileImage"];
+
+                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                  await saveToJson(data);
+                  if (data["name"] != "Not Found" && mounted) {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const SafeArea(child: Profile()),
+                      ),
+                    );
+                  }
+                });
+              }
+            },
+          ),
+        )
+        ..loadRequest(
+          Uri.parse('https://bbau.samarth.edu.in/index.php/site/login'),
+        );
+    }
+  }
+
+  // Inject login credentials
   Future<void> _injectJS() async {
-    await _controller.runJavaScript('''
+    if (_controller == null) return;
+    await _controller!.runJavaScript('''
       document.querySelector('input[name="LoginForm[username]"]').value = "${usernameController.text}";
       document.querySelector('input[name="LoginForm[password]"]').value = "${passwordController.text}";
       var loginbutton = document.querySelector('#login-form button[type="submit"]');
@@ -89,37 +105,49 @@ class _LoginTestState extends State<LoginTest> {
     ''');
   }
 
+  // Go to profile page after login
   Future<void> gotoprofile() async {
-    await _controller.runJavaScript('''
+    if (_controller == null) return;
+    await _controller!.runJavaScript('''
       window.location.href = 'https://bbau.samarth.edu.in/index.php/vidhyarthi/profile/index';
     ''');
   }
 
+  // Extract profile info
   Future<Map<String, dynamic>> extractProfileInfo() async {
+    if (_controller == null)
+      return {
+        "name": "Not Found",
+        "department": "Not Found",
+        "profileImage": "Not Found",
+      };
     try {
       String name =
-          await _controller.runJavaScriptReturningResult('''
+          await _controller!.runJavaScriptReturningResult('''
         (() => {
           var elem = document.querySelector("body > div.be-wrapper.be-fixed-sidebar > div.be-content > div > div:nth-child(3) > div > div > div:nth-child(1) > div > div.col-md-9.col-sm-12 > strong");
           return elem ? elem.textContent.trim() : "Not Found";
         })();
-      ''') as String;
+      ''')
+              as String;
 
       String department =
-          await _controller.runJavaScriptReturningResult('''
+          await _controller!.runJavaScriptReturningResult('''
         (() => {
           var elem = document.querySelector("body > div.be-wrapper.be-fixed-sidebar > div.be-content > div > div:nth-child(4) > div > div > div.card-body.table-responsive > div > div > div.card-header.text-uppercase > h5");
           return elem ? elem.textContent.trim() : "Not Found";
         })();
-      ''') as String;
+      ''')
+              as String;
 
       String profileImage =
-          await _controller.runJavaScriptReturningResult('''
+          await _controller!.runJavaScriptReturningResult('''
         (() => {
           var elem = document.querySelector("body > div.be-wrapper.be-fixed-sidebar > div.be-content > div > div:nth-child(3) > div > div > div:nth-child(1) > div > div.col-md-3.col-sm-12 > img");
           return elem ? elem.src : "Not Found";
         })();
-      ''') as String;
+      ''')
+              as String;
 
       return {
         "name": name.replaceAll('"', ''),
@@ -136,6 +164,7 @@ class _LoginTestState extends State<LoginTest> {
     }
   }
 
+  // Save profile locally
   Future<void> saveToJson(Map<String, dynamic> data) async {
     try {
       final dir = await getApplicationDocumentsDirectory();
@@ -153,11 +182,15 @@ class _LoginTestState extends State<LoginTest> {
       body: SafeArea(
         child: Stack(
           children: [
-            Positioned(
-              height: 0,
-              width: 0,
-              child: WebViewWidget(controller: _controller),
-            ),
+            // Hidden WebView
+            if (_controller != null)
+              Positioned(
+                height: 0,
+                width: 0,
+                child: WebViewWidget(controller: _controller!),
+              ),
+
+            // Login UI
             Center(
               child: isLoading
                   ? Column(
@@ -169,7 +202,7 @@ class _LoginTestState extends State<LoginTest> {
                       ],
                     )
                   : SizedBox(
-                      height: 580,
+                      height: 430,
                       width: 340,
                       child: Card(
                         child: Column(
@@ -183,7 +216,7 @@ class _LoginTestState extends State<LoginTest> {
                             ),
                             const SizedBox(height: 30),
 
-                            // Enrollment ID input
+                            // Username
                             SizedBox(
                               width: 260,
                               child: TextField(
@@ -197,7 +230,7 @@ class _LoginTestState extends State<LoginTest> {
                             ),
                             const SizedBox(height: 16),
 
-                            // Password input
+                            // Password
                             SizedBox(
                               width: 260,
                               child: TextField(
@@ -210,38 +243,9 @@ class _LoginTestState extends State<LoginTest> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 30),
 
-                            // Semester input
-                            SizedBox(
-                              width: 260,
-                              child: TextField(
-                                controller: semesterController,
-                                decoration: const InputDecoration(
-                                  labelText: "Semester",
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.school),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-
-                            // Year input
-                            SizedBox(
-                              width: 260,
-                              child: TextField(
-                                controller: yearController,
-                                decoration: const InputDecoration(
-                                  labelText: "Year",
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.calendar_today),
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 20),
-
-                            // Login Button
+                            // Login button
                             Container(
                               width: 120,
                               decoration: BoxDecoration(
@@ -255,9 +259,12 @@ class _LoginTestState extends State<LoginTest> {
                                 onPressed: () async {
                                   setState(() => isLoading = true);
                                   await _injectJS();
-                                  Future.delayed(const Duration(seconds: 3), () {
-                                    gotoprofile();
-                                  });
+                                  Future.delayed(
+                                    const Duration(seconds: 3),
+                                    () {
+                                      gotoprofile();
+                                    },
+                                  );
                                 },
                                 child: const Text(
                                   "Login",
@@ -275,4 +282,15 @@ class _LoginTestState extends State<LoginTest> {
       ),
     );
   }
+}
+
+// Optional: Add this logout function in Profile.dart
+Future<void> logout(BuildContext context) async {
+  final dir = await getApplicationDocumentsDirectory();
+  final file = File('${dir.path}/profile.json');
+  if (await file.exists()) await file.delete();
+
+  Navigator.of(
+    context,
+  ).pushReplacement(MaterialPageRoute(builder: (context) => const LoginTest()));
 }
