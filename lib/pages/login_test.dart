@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:attendo/data/notifires.dart';
 import 'package:attendo/pages/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart' show Lottie;
 import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -27,11 +28,7 @@ class _LoginTestState extends State<LoginTest> {
   // 🔹 Utility: Calculate Admission Year, Year of Study & Semester
   Map<String, dynamic> getStudyInfo(String enrollment) {
     if (!enrollment.contains("/")) {
-      return {
-        "admissionYear": null,
-        "yearOfStudy": null,
-        "semester": null,
-      };
+      return {"admissionYear": null, "yearOfStudy": null, "semester": null};
     }
 
     try {
@@ -58,11 +55,7 @@ class _LoginTestState extends State<LoginTest> {
         "semester": semester,
       };
     } catch (e) {
-      return {
-        "admissionYear": null,
-        "yearOfStudy": null,
-        "semester": null,
-      };
+      return {"admissionYear": null, "yearOfStudy": null, "semester": null};
     }
   }
 
@@ -112,8 +105,7 @@ class _LoginTestState extends State<LoginTest> {
                 if (!mounted) return;
 
                 // 🔹 Add Year & Semester based on Enrollment ID
-                final studyInfo =
-                    getStudyInfo(usernameController.text.trim());
+                final studyInfo = getStudyInfo(usernameController.text.trim());
                 data["yearOfStudy"] = studyInfo["yearOfStudy"];
                 data["semester"] = studyInfo["semester"];
 
@@ -178,7 +170,8 @@ class _LoginTestState extends State<LoginTest> {
           var elem = document.querySelector("body > div.be-wrapper.be-fixed-sidebar > div.be-content > div > div:nth-child(3) > div > div > div:nth-child(1) > div > div.col-md-9.col-sm-12 > strong");
           return elem ? elem.textContent.trim() : "Not Found";
         })();
-      ''') as String;
+      ''')
+              as String;
 
       String department =
           await _controller!.runJavaScriptReturningResult('''
@@ -186,7 +179,8 @@ class _LoginTestState extends State<LoginTest> {
           var elem = document.querySelector("body > div.be-wrapper.be-fixed-sidebar > div.be-content > div > div:nth-child(4) > div > div > div.card-body.table-responsive > div > div > div.card-header.text-uppercase > h5");
           return elem ? elem.textContent.trim() : "Not Found";
         })();
-      ''') as String;
+      ''')
+              as String;
 
       String profileImage =
           await _controller!.runJavaScriptReturningResult('''
@@ -194,7 +188,8 @@ class _LoginTestState extends State<LoginTest> {
           var elem = document.querySelector("body > div.be-wrapper.be-fixed-sidebar > div.be-content > div > div:nth-child(3) > div > div > div:nth-child(1) > div > div.col-md-3.col-sm-12 > img");
           return elem ? elem.src : "Not Found";
         })();
-      ''') as String;
+      ''')
+              as String;
 
       return {
         "name": name.replaceAll('"', ''),
@@ -242,10 +237,16 @@ class _LoginTestState extends State<LoginTest> {
               child: isLoading
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        CircularProgressIndicator(),
-                        SizedBox(height: 20),
-                        Text("Fetching your profile, please wait..."),
+                      children: [
+                        Lottie.asset(
+                          'assets/animations/lottie.json',
+                          width: 300,
+                          height: 300,
+                          fit: BoxFit.contain,
+                          repeat: true,
+                          animate: true,
+                        ),
+                        const Text("Fetching your profile, please wait..."),
                       ],
                     )
                   : SizedBox(
@@ -279,24 +280,6 @@ class _LoginTestState extends State<LoginTest> {
                                       border: OutlineInputBorder(),
                                       prefixIcon: Icon(Icons.person),
                                     ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Builder(
-                                    builder: (context) {
-                                      final info = getStudyInfo(
-                                          usernameController.text.trim());
-                                      if (info["yearOfStudy"] == null) {
-                                        return const SizedBox();
-                                      }
-                                      return Text(
-                                        "🎓 Year ${info["yearOfStudy"]} • Semester ${info["semester"]}",
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      );
-                                    },
                                   ),
                                 ],
                               ),

@@ -123,7 +123,7 @@ class _ProfileState extends State<Profile> {
                                             colorBlendMode: BlendMode.colorBurn,
                                           )
                                         : Image.asset(
-                                            'assets/images/prof.png',
+                                            '',
                                             height: 90,
                                             width: 90,
                                             fit: BoxFit.cover,
