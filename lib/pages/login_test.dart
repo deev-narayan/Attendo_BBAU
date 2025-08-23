@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:attendo/data/notifires.dart';
 import 'package:attendo/pages/profile.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,6 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class LoginTest extends StatefulWidget {
   const LoginTest({super.key});
-
   @override
   State<LoginTest> createState() => _LoginTestState();
 }
@@ -18,13 +16,54 @@ class _LoginTestState extends State<LoginTest> {
   WebViewController? _controller; // nullable
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _checkSavedProfile();
+  }
+
+  // 🔹 Utility: Calculate Admission Year, Year of Study & Semester
+  Map<String, dynamic> getStudyInfo(String enrollment) {
+    if (!enrollment.contains("/")) {
+      return {
+        "admissionYear": null,
+        "yearOfStudy": null,
+        "semester": null,
+      };
+    }
+
+    try {
+      // Example: 841/24 → admission year = 2024
+      List<String> parts = enrollment.split('/');
+      int admissionYear = 2000 + int.parse(parts[1]);
+
+      DateTime now = DateTime.now();
+      int currentYear = now.year;
+      int yearOfStudy = (currentYear - admissionYear) + 1;
+
+      int semester;
+      if (now.month >= 7) {
+        // July–Dec → Odd semester
+        semester = (yearOfStudy * 2) - 1;
+      } else {
+        // Jan–June → Even semester
+        semester = (yearOfStudy * 2);
+      }
+
+      return {
+        "admissionYear": admissionYear,
+        "yearOfStudy": yearOfStudy,
+        "semester": semester,
+      };
+    } catch (e) {
+      return {
+        "admissionYear": null,
+        "yearOfStudy": null,
+        "semester": null,
+      };
+    }
   }
 
   // Load saved profile.json if exists
@@ -50,6 +89,8 @@ class _LoginTestState extends State<LoginTest> {
       nameNotifier.value = savedData["name"];
       departmentNotifier.value = savedData["department"];
       profileImageNotifier.value = savedData["profileImage"];
+      yearNotifier.value = savedData["yearOfStudy"];
+      semesterNotifier.value = savedData["semester"];
 
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
@@ -70,9 +111,17 @@ class _LoginTestState extends State<LoginTest> {
                 final data = await extractProfileInfo();
                 if (!mounted) return;
 
+                // 🔹 Add Year & Semester based on Enrollment ID
+                final studyInfo =
+                    getStudyInfo(usernameController.text.trim());
+                data["yearOfStudy"] = studyInfo["yearOfStudy"];
+                data["semester"] = studyInfo["semester"];
+
                 nameNotifier.value = data["name"];
                 departmentNotifier.value = data["department"];
                 profileImageNotifier.value = data["profileImage"];
+                yearNotifier.value = data["yearOfStudy"];
+                semesterNotifier.value = data["semester"];
 
                 WidgetsBinding.instance.addPostFrameCallback((_) async {
                   await saveToJson(data);
@@ -115,12 +164,13 @@ class _LoginTestState extends State<LoginTest> {
 
   // Extract profile info
   Future<Map<String, dynamic>> extractProfileInfo() async {
-    if (_controller == null)
+    if (_controller == null) {
       return {
         "name": "Not Found",
         "department": "Not Found",
         "profileImage": "Not Found",
       };
+    }
     try {
       String name =
           await _controller!.runJavaScriptReturningResult('''
@@ -128,8 +178,7 @@ class _LoginTestState extends State<LoginTest> {
           var elem = document.querySelector("body > div.be-wrapper.be-fixed-sidebar > div.be-content > div > div:nth-child(3) > div > div > div:nth-child(1) > div > div.col-md-9.col-sm-12 > strong");
           return elem ? elem.textContent.trim() : "Not Found";
         })();
-      ''')
-              as String;
+      ''') as String;
 
       String department =
           await _controller!.runJavaScriptReturningResult('''
@@ -137,8 +186,7 @@ class _LoginTestState extends State<LoginTest> {
           var elem = document.querySelector("body > div.be-wrapper.be-fixed-sidebar > div.be-content > div > div:nth-child(4) > div > div > div.card-body.table-responsive > div > div > div.card-header.text-uppercase > h5");
           return elem ? elem.textContent.trim() : "Not Found";
         })();
-      ''')
-              as String;
+      ''') as String;
 
       String profileImage =
           await _controller!.runJavaScriptReturningResult('''
@@ -146,8 +194,7 @@ class _LoginTestState extends State<LoginTest> {
           var elem = document.querySelector("body > div.be-wrapper.be-fixed-sidebar > div.be-content > div > div:nth-child(3) > div > div > div:nth-child(1) > div > div.col-md-3.col-sm-12 > img");
           return elem ? elem.src : "Not Found";
         })();
-      ''')
-              as String;
+      ''') as String;
 
       return {
         "name": name.replaceAll('"', ''),
@@ -202,7 +249,7 @@ class _LoginTestState extends State<LoginTest> {
                       ],
                     )
                   : SizedBox(
-                      height: 430,
+                      height: 470,
                       width: 340,
                       child: Card(
                         child: Column(
@@ -216,16 +263,42 @@ class _LoginTestState extends State<LoginTest> {
                             ),
                             const SizedBox(height: 30),
 
-                            // Username
+                            // Username with semester/year display
                             SizedBox(
                               width: 260,
-                              child: TextField(
-                                controller: usernameController,
-                                decoration: const InputDecoration(
-                                  labelText: "Enrollment ID",
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.person),
-                                ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TextField(
+                                    controller: usernameController,
+                                    onChanged: (_) {
+                                      setState(() {}); // Rebuild UI when typing
+                                    },
+                                    decoration: const InputDecoration(
+                                      labelText: "Enrollment ID",
+                                      border: OutlineInputBorder(),
+                                      prefixIcon: Icon(Icons.person),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Builder(
+                                    builder: (context) {
+                                      final info = getStudyInfo(
+                                          usernameController.text.trim());
+                                      if (info["yearOfStudy"] == null) {
+                                        return const SizedBox();
+                                      }
+                                      return Text(
+                                        "🎓 Year ${info["yearOfStudy"]} • Semester ${info["semester"]}",
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.blueAccent,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
                             const SizedBox(height: 16),
