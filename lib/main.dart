@@ -1,8 +1,14 @@
 import 'package:attendo/pages/login_test.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'pages/user_validation.dart';
 
-void main() {
+List<CameraDescription> cameras = [];
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  cameras = await availableCameras();
   runApp(const MyApp());
 }
 

@@ -283,14 +283,3 @@ class _LoginTestState extends State<LoginTest> {
     );
   }
 }
-
-// Optional: Add this logout function in Profile.dart
-Future<void> logout(BuildContext context) async {
-  final dir = await getApplicationDocumentsDirectory();
-  final file = File('${dir.path}/profile.json');
-  if (await file.exists()) await file.delete();
-
-  Navigator.of(
-    context,
-  ).pushReplacement(MaterialPageRoute(builder: (context) => const LoginTest()));
-}

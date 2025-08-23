@@ -1,11 +1,14 @@
+import 'dart:io';
 import 'dart:ui';
 import 'dart:convert';
 import 'package:attendo/data/notifires.dart';
+import 'package:attendo/pages/login_test.dart';
 import 'package:attendo/pages/user_validation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -32,6 +35,17 @@ class _ProfileState extends State<Profile> {
     });
   }
 
+  // Optional: Add this logout function in Profile.dart
+  Future<void> logout(BuildContext context) async {
+    final dir = await getApplicationDocumentsDirectory();
+    final file = File('${dir.path}/profile.json');
+    if (await file.exists()) await file.delete();
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const LoginTest()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +70,7 @@ class _ProfileState extends State<Profile> {
                         color: const Color.fromARGB(255, 0, 132, 255),
                         width: 2,
                       ),
-          
+
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Center(
@@ -71,9 +85,9 @@ class _ProfileState extends State<Profile> {
                   );
                 },
               ),
-          
+
               const SizedBox(height: 10),
-          
+
               // 🔹 Profile card
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 5),
@@ -100,7 +114,12 @@ class _ProfileState extends State<Profile> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle, // circular border
                                     border: Border.all(
-                                      color: Color.fromARGB(113, 0, 132, 255), // border color
+                                      color: Color.fromARGB(
+                                        113,
+                                        0,
+                                        132,
+                                        255,
+                                      ), // border color
                                       width: 3, // border width
                                     ),
                                   ),
@@ -109,7 +128,8 @@ class _ProfileState extends State<Profile> {
                                       100,
                                     ), // circular image
                                     child:
-                                        imgUrl.isNotEmpty && imgUrl != "Not Found"
+                                        imgUrl.isNotEmpty &&
+                                            imgUrl != "Not Found"
                                         ? Image.network(
                                             imgUrl,
                                             height: 90,
@@ -127,7 +147,7 @@ class _ProfileState extends State<Profile> {
                                 );
                               },
                             ),
-          
+
                             // 🔹 Name + semester + year
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -175,9 +195,9 @@ class _ProfileState extends State<Profile> {
                   ],
                 ),
               ),
-          
+
               const SizedBox(height: 5),
-          
+
               // 🔹 Timetable + Percentage
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
@@ -185,7 +205,7 @@ class _ProfileState extends State<Profile> {
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(40, 40, 40, 40),
                     width: 340,
-          
+
                     child: Center(
                       child: Column(
                         children: [
@@ -193,7 +213,7 @@ class _ProfileState extends State<Profile> {
                             child: Container(
                               height: 20,
                               width: 300,
-          
+
                               child: const Text("Percentage"),
                             ),
                           ),
@@ -221,7 +241,8 @@ class _ProfileState extends State<Profile> {
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(entry.key),
                                       Text("${entry.value}"),
@@ -236,9 +257,9 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
               ),
-          
+
               const SizedBox(height: 5),
-          
+
               // 🔹 Attendance Button
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
@@ -272,10 +293,12 @@ class _ProfileState extends State<Profile> {
           ),
         ),
       ),
-      bottomNavigationBar: NavigationBar(destinations: [
-        NavigationDestination(icon: Icon(Icons.fact_check), label: "Attend"),
-        NavigationDestination(icon: Icon(Icons.info_sharp), label: "More"),
-      ]),
+      bottomNavigationBar: NavigationBar(
+        destinations: [
+          NavigationDestination(icon: Icon(Icons.fact_check), label: "Attend"),
+          NavigationDestination(icon: Icon(Icons.info_sharp), label: "More"),
+        ],
+      ),
     );
   }
 }
