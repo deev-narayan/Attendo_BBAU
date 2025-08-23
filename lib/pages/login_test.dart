@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:attendo/data/notifires.dart';
-import 'package:attendo/pages/profile.dart';
+import 'package:attendo/widget/widget_tree.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart' show Lottie;
 import 'package:path_provider/path_provider.dart';
@@ -88,7 +88,7 @@ class _LoginTestState extends State<LoginTest> {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const SafeArea(child: Profile()),
+          builder: (context) => const SafeArea(child: WidgetTree()),
         ),
       );
     } else {
@@ -120,7 +120,8 @@ class _LoginTestState extends State<LoginTest> {
                   if (data["name"] != "Not Found" && mounted) {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (context) => const SafeArea(child: Profile()),
+                        builder: (context) =>
+                            const SafeArea(child: WidgetTree()),
                       ),
                     );
                   }

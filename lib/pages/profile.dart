@@ -292,12 +292,6 @@ class _ProfileState extends State<Profile> {
           ),
         ),
       ),
-      bottomNavigationBar: NavigationBar(
-        destinations: [
-          NavigationDestination(icon: Icon(Icons.fact_check), label: "Attend"),
-          NavigationDestination(icon: Icon(Icons.info_sharp), label: "More"),
-        ],
-      ),
     );
   }
 }
