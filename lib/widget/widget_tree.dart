@@ -8,6 +8,11 @@ class WidgetTree extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ✅ Reset to index 0 whenever WidgetTree loads
+    if (selectPage.value != 0) {
+      selectPage.value = 0;
+    }
+
     final List<Widget> pages = const [
       Profile(),
       Overviewpage(),
@@ -17,7 +22,7 @@ class WidgetTree extends StatelessWidget {
       valueListenable: selectPage,
       builder: (context, selectedPage, child) {
         return Scaffold(
-          body: pages[selectedPage], // ✅ show correct page
+          body: pages[selectedPage],
           bottomNavigationBar: NavigationBar(
             destinations: const [
               NavigationDestination(icon: Icon(Icons.person), label: "Profile"),

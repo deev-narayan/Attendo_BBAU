@@ -51,10 +51,10 @@
       "04:15-05:15": "HSMC-306"
     },
     "saturday":{
-      "whole day" : "revise"
+      "Whole Day" : "Revise"
     },
     "sunday":{
-      "whole day" : "revise"
+      "Whole Day" : "Revise"
     }
   }
 }
