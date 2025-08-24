@@ -1,4 +1,10 @@
+import 'dart:io';
+
+import 'package:attendo/main.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class UserValidation extends StatefulWidget {
   const UserValidation({super.key});
@@ -8,6 +14,91 @@ class UserValidation extends StatefulWidget {
 }
 
 class _UserValidationState extends State<UserValidation> {
+  CameraController controller = CameraController(
+    cameras.firstWhere(
+      (camera) => camera.lensDirection == CameraLensDirection.front,
+      orElse: () => cameras.first,
+    ),
+    ResolutionPreset.high,
+  );
+
+  int selectedCameraIndex = 2;
+  bool isInitialized = false;
+  bool permissionGranted = false;
+
+  bool cameraopen = false;
+  @override
+  void initState() {
+    super.initState();
+    requestCameraPermission();
+  }
+
+  Future<void> requestCameraPermission() async {
+    final status = await Permission.camera.request();
+
+    if (status.isGranted) {
+      permissionGranted = true;
+      initializeCamera(selectedCameraIndex);
+    } else {
+      setState(() {
+        permissionGranted = false;
+      });
+    }
+  }
+
+  void initializeCamera(int index) async {
+    try {
+      await controller.initialize();
+      setState(() {
+        isInitialized = true;
+        selectedCameraIndex = index;
+      });
+    } catch (e) {
+      print('Camera error: $e');
+    }
+  }
+
+  Future<void> takePicture(BuildContext context) async {
+    if (!controller.value.isInitialized) return;
+
+    final directory = Directory('/storage/emulated/0/Pictures/CameraApp');
+    final timestamp = DateTime.now().microsecondsSinceEpoch;
+    final path = join(directory.path, 'IMG_$timestamp.png');
+    await File(path).create(recursive: true);
+
+    try {
+      await controller.takePicture().then((file) {
+        file.saveTo(path);
+        print("pricture clicked");
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (BuildContext context) {}),
+        // );
+      });
+    } catch (e) {
+      print('Error taking picture: $e');
+    }
+  }
+
+  void switchCamera() async {
+    await controller.dispose();
+    final newIndex = (selectedCameraIndex + 1) % cameras.length;
+
+    setState(() {
+      isInitialized = false;
+    });
+
+    initializeCamera(newIndex);
+  }
+
+  @override
+  void dispose() {
+    if (controller.value.isInitialized) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,6 +238,30 @@ class _UserValidationState extends State<UserValidation> {
                             ],
                           ),
                         ),
+                        SizedBox(height: 10),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: isInitialized
+                              ? AspectRatio(
+                                  aspectRatio: 1,
+                                  child: FittedBox(
+                                    fit: BoxFit.cover,
+                                    child: SizedBox(
+                                      width:
+                                          controller.value.previewSize!.height,
+                                      height:
+                                          controller.value.previewSize!.width,
+                                      child: CameraPreview(controller),
+                                    ),
+                                  ),
+                                )
+                              : SizedBox(
+                                  height: 200,
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ),
+                        ),
                         Container(
                           padding: EdgeInsets.all(20),
                           child: OutlinedButton(
@@ -163,6 +278,10 @@ class _UserValidationState extends State<UserValidation> {
                             ),
                             onPressed: () {
                               print("Opening camera");
+                              setState(() {});
+                              print(
+                                "Camera 111111111 ${controller.description.name}",
+                              );
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -174,7 +293,7 @@ class _UserValidationState extends State<UserValidation> {
                                 ),
                                 SizedBox(width: 10),
                                 Text(
-                                  "Start Camera",
+                                  "Switch Camera",
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 0, 132, 255),
                                     fontSize: 16,
