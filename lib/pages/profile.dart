@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:attendo/data/notifires.dart';
+import 'package:attendo/data/time_locate.dart';
 import 'package:attendo/pages/user_validation.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -126,6 +127,7 @@ class _ProfileState extends State<Profile> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              SizedBox(height: 17,),
               Card(
                 child: Container(
                   width: 340,
@@ -136,44 +138,7 @@ class _ProfileState extends State<Profile> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Time & Date
-                          const Text(
-                            "0:14:46 AM",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const Text(
-                            "Monday",
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                
-                          // Class Info
-                          const Text(
-                            "Class running",
-                            style: TextStyle(color: Colors.grey, fontSize: 14),
-                          ),
-                          const Text(
-                            "No Class Running",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          const Text(
-                            "Latitude: 26.770696\nLongitude: 80.9189773",
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
+                      RealtimeInfo(),
                       SizedBox(
                         height: 120,
                         width: 120,
@@ -209,7 +174,7 @@ class _ProfileState extends State<Profile> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                      width: 2,
+                      width: 1,
                       color: Color.fromARGB(255, 0, 132, 255),
                     ),
                   ),
@@ -234,21 +199,12 @@ class _ProfileState extends State<Profile> {
                 padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                 child: Card(
                   child: Container(
-                    padding: const EdgeInsets.fromLTRB(40, 40, 40, 40),
+                    padding: const EdgeInsets.fromLTRB(40, 25, 40, 40),
                     width: 340,
 
                     child: Center(
                       child: Column(
                         children: [
-                          Card(
-                            child: Container(
-                              height: 20,
-                              width: 300,
-
-                              child: const Text("Percentage"),
-                            ),
-                          ),
-                          const SizedBox(height: 5),
                           const SizedBox(
                             width: double.infinity,
                             child: Center(
@@ -275,8 +231,8 @@ class _ProfileState extends State<Profile> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(entry.key),
-                                      Text("${entry.value}"),
+                                      Text(entry.key,style: TextStyle(fontSize: 13,fontWeight: FontWeight.w600),),
+                                      Text("${entry.value}",style: TextStyle(fontSize: 13,fontWeight: FontWeight.w600),),
                                     ],
                                   ),
                                 );
